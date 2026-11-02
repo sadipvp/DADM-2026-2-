@@ -10,11 +10,12 @@ public class TicTacToeGame {
     public static final char COMPUTER_PLAYER = 'O';
     public static final char OPEN_SPOT = ' ';
 
-    private char mBoard[] = {'1','2','3','4','5','6','7','8','9'};
+    private char mBoard[] = new char[BOARD_SIZE];
     private Random mRand;
 
     public TicTacToeGame() {
         mRand = new Random();
+        clearBoard();
     }
 
     /** Limpia el tablero colocando espacios en blanco. */
@@ -24,9 +25,11 @@ public class TicTacToeGame {
         }
     }
 
-    /** Registra la jugada en la posición dada. */
+    /** Registra la jugada en la posición dada; si está ocupada, el tablero no cambia. */
     public void setMove(char player, int location) {
-        mBoard[location] = player;
+        if (mBoard[location] == OPEN_SPOT) {
+            mBoard[location] = player;
+        }
     }
 
     /** Verifica si hay un ganador (0: sigue el juego, 1: empate, 2: gana X, 3: gana O). */
@@ -64,7 +67,10 @@ public class TicTacToeGame {
         return 1;
     }
 
-    /** Obtiene el mejor movimiento para la IA o genera uno aleatorio. */
+    /**
+     * Obtiene el mejor movimiento para la IA o genera uno aleatorio.
+     * No modifica el tablero: hay que llamar a setMove() para aplicarlo.
+     */
     public int getComputerMove() {
         int move;
 
@@ -73,10 +79,10 @@ public class TicTacToeGame {
             if (mBoard[i] != HUMAN_PLAYER && mBoard[i] != COMPUTER_PLAYER) {
                 char curr = mBoard[i];
                 mBoard[i] = COMPUTER_PLAYER;
-                if (checkForWinner() == 3) {
+                int winner = checkForWinner();
+                mBoard[i] = curr;
+                if (winner == 3) {
                     return i;
-                } else {
-                    mBoard[i] = curr;
                 }
             }
         }
@@ -86,11 +92,10 @@ public class TicTacToeGame {
             if (mBoard[i] != HUMAN_PLAYER && mBoard[i] != COMPUTER_PLAYER) {
                 char curr = mBoard[i];
                 mBoard[i] = HUMAN_PLAYER;
-                if (checkForWinner() == 2) {
-                    mBoard[i] = COMPUTER_PLAYER;
+                int winner = checkForWinner();
+                mBoard[i] = curr;
+                if (winner == 2) {
                     return i;
-                } else {
-                    mBoard[i] = curr;
                 }
             }
         }
