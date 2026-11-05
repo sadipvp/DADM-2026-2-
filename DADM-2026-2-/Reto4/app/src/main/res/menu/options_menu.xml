@@ -8,10 +8,6 @@
         android:title="@string/difficulty"
         android:icon="@drawable/difficulty_level"
         android:showAsAction="ifRoom" />
-    <item android:id="@+id/about"
-        android:title="@string/about"
-        android:icon="@drawable/about"
-        android:showAsAction="ifRoom" />
     <item android:id="@+id/quit"
         android:title="@string/quit"
         android:icon="@drawable/quit_game"

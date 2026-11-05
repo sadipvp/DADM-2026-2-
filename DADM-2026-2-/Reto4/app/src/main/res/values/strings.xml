@@ -18,10 +18,6 @@
     <string name="quit_question">Are you sure you want to quit?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="about">About</string>
-    <string name="about_author">By sadipvp1</string>
-    <string name="about_text">Choose from one of three difficulty levels. Don\'t let the Android beat you!</string>
-    <string name="ok">OK</string>
     <string name="score_human">Human: %1$d</string>
     <string name="score_ties">Ties: %1$d</string>
     <string name="score_computer">Android: %1$d</string>

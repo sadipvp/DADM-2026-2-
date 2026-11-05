@@ -5,12 +5,18 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,7 +24,6 @@ public class AndroidTicTacToeActivity extends Activity {
 
     static final int DIALOG_DIFFICULTY_ID = 0;
     static final int DIALOG_QUIT_ID = 1;
-    static final int DIALOG_ABOUT_ID = 2;
 
     private TicTacToeGame mGame;
     private Button mBoardButtons[];
@@ -54,6 +59,7 @@ public class AndroidTicTacToeActivity extends Activity {
         mComputerScoreTextView = (TextView) findViewById(R.id.computer_score);
         mGame = new TicTacToeGame();
 
+        buildBottomMenu();
         updateScores();
         startNewGame();
     }
@@ -101,6 +107,53 @@ public class AndroidTicTacToeActivity extends Activity {
         return true;
     }
 
+    /** Oculta el menú de la barra superior: las opciones se muestran abajo, como en el tutorial. */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return false;
+    }
+
+    /**
+     * Android ya no muestra el menú inferior con iconos de las versiones 2.x, así que se
+     * reconstruye con una vista por cada opción de options_menu.xml.
+     */
+    private void buildBottomMenu() {
+        LinearLayout bar = (LinearLayout) findViewById(R.id.bottom_menu);
+        Menu menu = new PopupMenu(this, bar).getMenu();
+        onCreateOptionsMenu(menu);
+
+        float density = getResources().getDisplayMetrics().density;
+        int iconSize = Math.round(32 * density);
+        int padding = Math.round(8 * density);
+
+        TypedValue ripple = new TypedValue();
+        getTheme().resolveAttribute(android.R.attr.selectableItemBackground, ripple, true);
+
+        for (int i = 0; i < menu.size(); i++) {
+            final MenuItem item = menu.getItem(i);
+
+            Drawable icon = item.getIcon();
+            icon.setBounds(0, 0, iconSize, iconSize);
+
+            TextView option = new TextView(this);
+            option.setText(item.getTitle());
+            option.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+            option.setGravity(Gravity.CENTER);
+            option.setCompoundDrawablesRelative(null, icon, null, null);
+            option.setPadding(0, padding, 0, padding);
+            option.setBackgroundResource(ripple.resourceId);
+            option.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View view) {
+                    onOptionsItemSelected(item);
+                }
+            });
+
+            // Todas las opciones ocupan el mismo ancho
+            bar.addView(option, new LinearLayout.LayoutParams(
+                    0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Se usa if/else porque con el AGP actual los R.id no son constantes y no sirven en un switch.
@@ -110,9 +163,6 @@ public class AndroidTicTacToeActivity extends Activity {
             return true;
         } else if (id == R.id.ai_difficulty) {
             showDialog(DIALOG_DIFFICULTY_ID);
-            return true;
-        } else if (id == R.id.about) {
-            showDialog(DIALOG_ABOUT_ID);
             return true;
         } else if (id == R.id.quit) {
             showDialog(DIALOG_QUIT_ID);
@@ -161,13 +211,6 @@ public class AndroidTicTacToeActivity extends Activity {
                             }
                         })
                         .setNegativeButton(R.string.no, null);
-                dialog = builder.create();
-                break;
-
-            case DIALOG_ABOUT_ID:
-                View layout = getLayoutInflater().inflate(R.layout.about_dialog, null);
-                builder.setView(layout);
-                builder.setPositiveButton(R.string.ok, null);
                 dialog = builder.create();
                 break;
         }

@@ -87,4 +87,18 @@
 
     </RelativeLayout>
 
+    <!-- Empuja el menú hasta la parte inferior de la pantalla -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- Las opciones se crean en código a partir de options_menu.xml -->
+    <LinearLayout
+        android:id="@+id/bottom_menu"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#E6E6E6" />
+
 </LinearLayout>
